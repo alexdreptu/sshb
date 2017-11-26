@@ -1,0 +1,28 @@
+CC=@CC@
+CFLAGS=@CFLAGS@ -g -O2 -Wall -pedantic
+LDFLAGS=@LDFLAGS@
+LIBS=-lssh -lpthread
+OBJS=src/main.o src/files.o src/fork.o src/ssh.o
+OUT=sshb
+STATIC_LIBS=-lcrypto -lz -ldl
+
+all:
+	$(CC) $(CFLAGS) -c src/main.c -o src/main.o
+	$(CC) $(CFLAGS) -c src/fork.c -o src/fork.o
+	$(CC) $(CFLAGS) -c src/files.c -o src/files.o
+	$(CC) $(CFLAGS) -c src/ssh.c -o src/ssh.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(OUT) $(OBJS) $(LIBS)
+
+static:
+	$(CC) $(CFLAGS) -c src/main.c -o src/main.o
+	$(CC) $(CFLAGS) -c src/fork.c -o src/fork.o
+	$(CC) $(CFLAGS) -c src/files.c -o src/files.o
+	$(CC) $(CFLAGS) -c src/ssh.c -o src/ssh.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -static -o $(OUT)_static $(OBJS) $(LIBS) $(STATIC_LIBS)
+
+distclean:
+	rm -rv config.log config.status
+	make clean
+
+clean:
+	rm -rfv $(OBJS) $(OUT) $(OUT)_static Makefile
